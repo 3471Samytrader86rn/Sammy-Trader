@@ -1,3 +1,3 @@
 streamlit
-google-genai
-modelo = genai.GenerativeModel('gemini-2.5-flash')
+google-generativeai
+pillow
