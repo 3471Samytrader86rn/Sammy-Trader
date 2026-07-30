@@ -1,2 +1,2 @@
-streamlit
+model = genai.GenerativeModel('gemini-2.5-flash')streamlit
 google-generativeai
