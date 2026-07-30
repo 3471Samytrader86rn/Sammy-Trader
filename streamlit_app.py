@@ -30,9 +30,9 @@ if st.button("🚀 Analisar Gráfico", type="primary"):
     elif uploaded_file is None:
         st.warning("Envie uma imagem do gráfico para realizar a análise.")
     else:
-        try:
-            with st.spinner("Analisando padrão de velas e indicadores..."):
-                # Inicializa o cliente com a nova SDK oficial
+        with st.spinner("Analisando padrão de velas e indicadores..."):
+            try:
+                # Inicializa o cliente com a SDK oficial
                 client = genai.Client(api_key=api_key_input)
                 
                 prompt = f"""
@@ -46,14 +46,34 @@ if st.button("🚀 Analisar Gráfico", type="primary"):
                 4. Motivo da análise.
                 """
                 
-                # Chamada do modelo Gemini 2.5 Flash
-                response = client.models.generate_content(
-                    model='gemini-2.5-flash',
-                    contents=[image, prompt]
-                )
+                # Lista de modelos suportados para tentar automaticamente
+                modelos_para_testar = [
+                    'gemini-2.5-flash',
+                    'gemini-2.5-pro',
+                    'gemini-1.5-flash',
+                    'gemini-1.5-pro'
+                ]
                 
-                st.success("Análise Concluída!")
-                st.markdown(response.text)
+                resposta_texto = None
+                erro_ultimo = None
 
-        except Exception as e:
-            st.error(f"Erro ao processar a análise: {e}")
+                for nome_modelo in modelos_para_testar:
+                    try:
+                        response = client.models.generate_content(
+                            model=nome_modelo,
+                            contents=[image, prompt]
+                        )
+                        resposta_texto = response.text
+                        break  # Deu certo! Sai do loop.
+                    except Exception as err:
+                        erro_ultimo = err
+                        continue
+
+                if resposta_texto:
+                    st.success("Análise Concluída com sucesso!")
+                    st.markdown(resposta_texto)
+                else:
+                    st.error(f"Não foi possível conectar aos modelos da API. Detalhe: {erro_ultimo}")
+
+            except Exception as e:
+                st.error(f"Erro de configuração na API: {e}")
