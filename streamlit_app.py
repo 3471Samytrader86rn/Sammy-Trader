@@ -11,10 +11,10 @@ st.caption("IA de Análise Visual para Opções Binárias")
 st.sidebar.header("Configuração")
 api_key = st.sidebar.text_input("Cole sua Gemini API Key:", type="password")
 
-ativo = st.selectbox("Selecione o Ativo:", ["EUR/USD", "GBP/USD", "USD/JPY", "AUD/CAD", "Outro"])
-tempo = st.selectbox("Tempo gráfico:", ["M1", "M5"])
+ativo = st.selectbox("Selecione o Ativo:", ["EUR/USD", "EUR/JPY", "EUR/JPY(OTC)", "AUD/CAD", "Outro"])
+tempo = st.selectbox("Tempo gráfico:", ["S5", "M1"])
 
-uploaded_file = st.file_uploader("Tire foto ou envie o print do gráfico:", type=["jpg", "jpeg", "png"])
+uploaded_file = st.file_uploader("Tire foto analise direto o gráfico:", type=["jpg", "jpeg", "png"])
 
 if uploaded_file is not None:
     image = Image.open(uploaded_file)
@@ -29,7 +29,7 @@ if st.button("🚀 Analisar Gráfico", type="primary"):
         with st.spinner("Analisando padrão de velas e indicadores..."):
             try:
                 genai.configure(api_key=api_key)
-                model = genai.GenerativeModel("gemini-1.5-flash")
+                model = genai.GenerativeModel("gemini-2.5-flash")
                 
                 prompt = f"""
                 Você é o SAMMY TRADER, uma IA especialista em análise gráfica de opções binárias.
